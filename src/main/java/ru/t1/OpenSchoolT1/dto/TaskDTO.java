@@ -1,14 +1,11 @@
 package ru.t1.OpenSchoolT1.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import ru.t1.OpenSchoolT1.enums.TaskStatus;
 import ru.t1.OpenSchoolT1.model.Task;
-import lombok.Data;
 
 
-@Data
 public class TaskDTO {
 
     private Long id;
@@ -75,6 +72,9 @@ public class TaskDTO {
     }
 
     public static TaskDTO fromEntity(Task task) {
+        if (task == null) {
+            return null;
+        }
         return new TaskDTO(task.getId(), task.getTitle(), task.getDescription(), task.getUserId(), task.getStatus());
     }
 
@@ -88,4 +88,3 @@ public class TaskDTO {
         return task;
     }
 }
-

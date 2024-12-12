@@ -16,6 +16,6 @@ public class KafkaTaskProducer {
     private String taskStatusTopic;
 
     public void sendTaskStatusUpdate(TaskDTO taskDTO) {
-        kafkaTemplate.send(taskStatusTopic, taskDTO.getUser_id().toString(), taskDTO);
+        kafkaTemplate.send(taskStatusTopic, taskDTO.getUserId().toString(), taskDTO);
     }
 }

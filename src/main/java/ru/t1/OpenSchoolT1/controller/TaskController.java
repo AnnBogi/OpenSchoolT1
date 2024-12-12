@@ -1,16 +1,12 @@
 package ru.t1.OpenSchoolT1.controller;
 
+import ru.t1.OpenSchoolT1.service.TaskService;
+import ru.t1.OpenSchoolT1.dto.TaskDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.t1.OpenSchoolT1.model.Task;
-import ru.t1.OpenSchoolT1.dto.TaskDTO;
-import ru.t1.OpenSchoolT1.mapper.TaskMapper;
-import ru.t1.OpenSchoolT1.service.TaskService;
-import ru.t1.OpenSchoolT1.enums.TaskStatus;
 
 import java.util.List;
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -25,22 +21,20 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskDTO taskDTO) {
-        Task task = taskDTO.toEntity();
-        Task createdTask = taskService.createTask(task);
-        return ResponseEntity.ok(TaskDTO.fromEntity(createdTask));
+        TaskDTO createdTask = taskService.createTask(taskDTO);
+        return ResponseEntity.ok(createdTask);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTask(@PathVariable Long id) {
         TaskDTO task = taskService.getTask(id);
-        return ResponseEntity.ok(TaskDTO.fromEntity(task));
+        return ResponseEntity.ok(task);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @Valid @RequestBody TaskDTO taskDTO) {
-        Task task = taskDTO.toEntity();
-        Task updatedTask = taskService.updateTask(id, task);
-        return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
+        TaskDTO updatedTask = taskService.updateTask(id, taskDTO);
+        return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{id}")
@@ -50,10 +44,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        List<TaskDTO> tasks = taskService.getAllTasks();
-        List<TaskDTO> taskDTOs = tasks.stream()
-                .map(TaskDTO::fromEntity)
-                .collect(Collectors.toList());
+        List<TaskDTO> taskDTOs = taskService.getAllTasks(); // Используем List<TaskDTO>
         return ResponseEntity.ok(taskDTOs);
     }
 }

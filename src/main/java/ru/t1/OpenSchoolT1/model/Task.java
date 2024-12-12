@@ -3,7 +3,6 @@ package ru.t1.OpenSchoolT1.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.jetbrains.annotations.Contract;
 import ru.t1.OpenSchoolT1.enums.TaskStatus;
 
 
@@ -27,11 +26,12 @@ public class Task {
 
     }
 
-    @Contract(pure = true)
+
     public Task(Long id,
                 String title,
                 String description,
-                Long userId, TaskStatus status) {
+                Long userId,
+                TaskStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
