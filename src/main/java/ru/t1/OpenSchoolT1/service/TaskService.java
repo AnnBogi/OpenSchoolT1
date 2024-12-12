@@ -10,6 +10,8 @@ import ru.t1.OpenSchoolT1.model.Task;
 import ru.t1.OpenSchoolT1.mapper.TaskMapper;
 import ru.t1.OpenSchoolT1.dto.TaskDTO;
 import ru.t1.OpenSchoolT1.repository.TaskRepository;
+import ru.t1.OpenSchoolT1.kafka.KafkaTaskProducer;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,10 +21,12 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final KafkaTaskProducer kafkaTaskProducer;
 
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, KafkaTaskProducer kafkaTaskProducer) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
+        this.kafkaTaskProducer = kafkaTaskProducer;
     }
 
     @LogCreateTask
@@ -45,12 +49,17 @@ public class TaskService {
         if (id == null || taskDTO == null) {
             throw new IllegalArgumentException("Task or ID cannot be null");
         }
+
         if (!taskRepository.existsById(id)) {
             throw new TaskNotFoundException(id);
         }
+        Task existingTask = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         Task task = taskMapper.toEntity(taskDTO);
-        task.setId(id); // Убедитесь, что ID соответствует
-        Task updatedTask = taskRepository.save(task);
+        task.setId(id);
+        existingTask.setStatus(taskDTO.getStatus());
+        Task updatedTask = taskRepository.save(existingTask);
+        kafkaTaskProducer.sendTaskStatusUpdate(taskMapper.toDto(updatedTask));
+
         return taskMapper.toDto(updatedTask);
     }
 

@@ -1,12 +1,10 @@
 package ru.t1.OpenSchoolT1.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.Contract;
+import ru.t1.OpenSchoolT1.enums.TaskStatus;
 
 
 @Entity
@@ -19,6 +17,9 @@ public class Task {
     private String title;
     @NotBlank(message = "Description is mandatory")
     private String description;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TaskStatus status;
     @NotNull(message = "User ID is mandatory")
     private Long userId;
 
@@ -26,14 +27,16 @@ public class Task {
 
     }
 
+    @Contract(pure = true)
     public Task(Long id,
                 String title,
                 String description,
-                Long userId) {
+                Long userId, TaskStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.userId = userId;
+        this.status = status;
     }
 
 
@@ -60,5 +63,11 @@ public class Task {
     }
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+    public TaskStatus getStatus() {
+        return status;
     }
 }

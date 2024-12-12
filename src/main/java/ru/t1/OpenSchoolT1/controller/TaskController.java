@@ -6,10 +6,12 @@ import ru.t1.OpenSchoolT1.model.Task;
 import ru.t1.OpenSchoolT1.dto.TaskDTO;
 import ru.t1.OpenSchoolT1.mapper.TaskMapper;
 import ru.t1.OpenSchoolT1.service.TaskService;
+import ru.t1.OpenSchoolT1.enums.TaskStatus;
 
 import java.util.List;
 import javax.validation.Valid;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/tasks")

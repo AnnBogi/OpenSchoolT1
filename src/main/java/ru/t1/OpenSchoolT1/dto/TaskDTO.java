@@ -3,8 +3,12 @@ package ru.t1.OpenSchoolT1.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import ru.t1.OpenSchoolT1.enums.TaskStatus;
 import ru.t1.OpenSchoolT1.model.Task;
+import lombok.Data;
 
+
+@Data
 public class TaskDTO {
 
     private Long id;
@@ -18,14 +22,17 @@ public class TaskDTO {
     @NotNull(message = "User ID is mandatory")
     private Long userId;
 
+    private TaskStatus status;
+
     public TaskDTO() {
     }
 
-    public TaskDTO(Long id, String title, String description, Long userId) {
+    public TaskDTO(Long id, String title, String description, Long userId, TaskStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.userId = userId;
+        this.status = status;
     }
 
     public Long getId() {
@@ -60,8 +67,15 @@ public class TaskDTO {
         this.userId = userId;
     }
 
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+    public TaskStatus getStatus() {
+        return status;
+    }
+
     public static TaskDTO fromEntity(Task task) {
-        return new TaskDTO(task.getId(), task.getTitle(), task.getDescription(), task.getUserId());
+        return new TaskDTO(task.getId(), task.getTitle(), task.getDescription(), task.getUserId(), task.getStatus());
     }
 
     public Task toEntity() {
@@ -70,6 +84,7 @@ public class TaskDTO {
         task.setTitle(this.title);
         task.setDescription(this.description);
         task.setUserId(this.userId);
+        task.setStatus(this.status);
         return task;
     }
 }
