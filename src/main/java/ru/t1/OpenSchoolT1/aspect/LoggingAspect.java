@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 @Component
 @Aspect
@@ -53,8 +54,14 @@ public class LoggingAspect {
     @Around("execution(* ru.t1.OpenSchoolT1.service.TaskService.*(..))")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         logger.info("Around before method: " + joinPoint.getSignature().getName());
-        Object result = joinPoint.proceed();
-        logger.info("Around after method: " + joinPoint.getSignature().getName());
+        Object result;
+        try {
+            result = joinPoint.proceed(); // Вызов метода
+            logger.info("Around after method: " + joinPoint.getSignature().getName());
+        } catch (Throwable throwable) {
+            logger.log(Level.SEVERE, "Exception in method: " + joinPoint.getSignature().getName(), throwable);
+            throw throwable;
+        }
         return result;
     }
 }

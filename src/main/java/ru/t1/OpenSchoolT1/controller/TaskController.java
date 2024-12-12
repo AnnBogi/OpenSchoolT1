@@ -1,42 +1,57 @@
 package ru.t1.OpenSchoolT1.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.t1.OpenSchoolT1.model.Task;
+import ru.t1.OpenSchoolT1.dto.TaskDTO;
+import ru.t1.OpenSchoolT1.mapper.TaskMapper;
 import ru.t1.OpenSchoolT1.service.TaskService;
 
 import java.util.List;
-import java.util.Optional;
+import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskDTO taskDTO) {
+        Task task = taskDTO.toEntity();
+        Task createdTask = taskService.createTask(task);
+        return ResponseEntity.ok(TaskDTO.fromEntity(createdTask));
     }
 
     @GetMapping("/{id}")
-    public Optional<Task> getTask(@PathVariable Long id) {
-        return taskService.getTask(id);
+    public ResponseEntity<TaskDTO> getTask(@PathVariable Long id) {
+        TaskDTO task = taskService.getTask(id);
+        return ResponseEntity.ok(TaskDTO.fromEntity(task));
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @Valid @RequestBody TaskDTO taskDTO) {
+        Task task = taskDTO.toEntity();
+        Task updatedTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id);
+    public ResponseEntity<Boolean> deleteTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.deleteTask(id));
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        List<TaskDTO> tasks = taskService.getAllTasks();
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
 }
