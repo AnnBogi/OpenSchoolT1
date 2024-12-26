@@ -3,6 +3,7 @@ package ru.t1.OpenSchoolT1.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import ru.t1.OpenSchoolT1.dto.TaskDTO;
 import ru.t1.OpenSchoolT1.enums.TaskStatus;
 
 
@@ -69,5 +70,9 @@ public class Task {
     }
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public TaskDTO toDTO() {
+        return new TaskDTO(this.id, this.title, this.description, this.userId, this.status);
     }
 }

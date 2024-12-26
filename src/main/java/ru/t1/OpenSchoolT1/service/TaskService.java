@@ -2,9 +2,6 @@ package ru.t1.OpenSchoolT1.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.t1.OpenSchoolT1.aspect.annotation.LogCreateTask;
-import ru.t1.OpenSchoolT1.aspect.annotation.LogDeleteTask;
-import ru.t1.OpenSchoolT1.aspect.annotation.LogUpdateTask;
 import ru.t1.OpenSchoolT1.exception.TaskNotFoundException;
 import ru.t1.OpenSchoolT1.model.Task;
 import ru.t1.OpenSchoolT1.mapper.TaskMapper;
@@ -29,7 +26,6 @@ public class TaskService {
         this.kafkaTaskProducer = kafkaTaskProducer;
     }
 
-    @LogCreateTask
     @Transactional
     public TaskDTO createTask(TaskDTO taskDTO) {
         Task task = taskMapper.toEntity(taskDTO);
@@ -43,7 +39,6 @@ public class TaskService {
         return taskMapper.toDto(task);
     }
 
-    @LogUpdateTask
     @Transactional
     public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
         if (id == null || taskDTO == null) {
@@ -63,7 +58,6 @@ public class TaskService {
         return taskMapper.toDto(updatedTask);
     }
 
-    @LogDeleteTask
     public boolean deleteTask(Long id) {
         if (taskRepository.existsById(id)) {
             taskRepository.deleteById(id);
